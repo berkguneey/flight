@@ -17,11 +17,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.sun.istack.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class Airline {
 
@@ -37,7 +35,7 @@ public class Airline {
 	private String name;
 
 	@OneToMany(mappedBy = "airline", cascade = CascadeType.ALL)
-	private Set<Aircraft> aircrafts = new HashSet<>();
+	private Set<AirlineAircraft> aircrafts = new HashSet<>();
 
 	@Column(nullable = false)
 	private LocalDateTime createdAt;

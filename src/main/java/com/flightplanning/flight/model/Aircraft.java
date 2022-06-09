@@ -9,19 +9,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import com.sun.istack.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class Aircraft {
 	
@@ -44,9 +40,8 @@ public class Aircraft {
 	@Column(nullable = false)
 	private String model;
 	
-	@ManyToOne()
-	@JoinColumn(name = "airlineId")
-	private Airline airline;
+	@OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL)
+	private Set<AirlineAircraft> airlines = new HashSet<>();
 	
 	@OneToMany(mappedBy = "aircraft", cascade = CascadeType.ALL)
     private Set<Flight> flights = new HashSet<>();
