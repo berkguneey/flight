@@ -1,6 +1,6 @@
 # Airway Flight Planning Backend Application
 
-In this application, we want to design a small-scale airway flight planning system. It plans where the aircrafts of airline companies will fly from where to where.
+In this application, we want to design a small-scale airway flight planning system. It plans that the aircrafts of airline companies will fly from where to where.
 
 ## Description
 
