@@ -32,15 +32,19 @@ public class Flight {
 	@Column(nullable = false, unique = true)
 	private String code;
 	
-	@ManyToOne()
+	@ManyToOne
+	@JoinColumn(name = "airlineId")
+	private Airline airline;
+	
+	@ManyToOne
 	@JoinColumn(name = "aircraftId")
 	private Aircraft aircraft;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "sourceId")
 	private Airport source;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "destinationId")
 	private Airport destination;
 	
@@ -49,5 +53,5 @@ public class Flight {
 	
 	@Column(nullable = false)
 	private LocalTime flightTime;
-
+	
 }

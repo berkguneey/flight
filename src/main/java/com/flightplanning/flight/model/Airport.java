@@ -1,8 +1,8 @@
 package com.flightplanning.flight.model;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -19,9 +19,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.sun.istack.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Airport {
 	
@@ -44,15 +46,15 @@ public class Airport {
 	@Column(nullable = false)
 	private String name;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "countryId")
 	private Country country;
 	
 	@OneToMany(mappedBy = "source", cascade = CascadeType.ALL)
-    private Set<Flight> sourceFlights = new HashSet<>();
+    private List<Flight> sourceFlights = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "destination", cascade = CascadeType.ALL)
-    private Set<Flight> destinationFlights = new HashSet<>();
+    private List<Flight> destinationFlights = new ArrayList<>();
 	
 	@Column(nullable = false)
 	private LocalDateTime createdAt;

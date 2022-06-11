@@ -1,7 +1,7 @@
 package com.flightplanning.flight.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -15,9 +15,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.sun.istack.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Country {
 	
@@ -29,18 +31,18 @@ public class Country {
 	private UUID id;
 	
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String name;
 	
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String iso2;
 	
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String iso3;
 	
 	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL)
-    private Set<Airport> airports = new HashSet<>();
+    private List<Airport> airports = new ArrayList<>();
 
 }
