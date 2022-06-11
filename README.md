@@ -6,7 +6,7 @@ In this application, we want to design a small-scale airway flight planning syst
 
 GET Request -> localhost:8080/api/v0/flights
 
-Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso
+Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso  
 Using API For Airports in a Country: https://airlabs.co/api/v9/airports?api_key={apiKey}?country_code={countryISO2}
 
 ## Getting Started
