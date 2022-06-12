@@ -1,6 +1,5 @@
 package com.flightplanning.flight.dto;
 
-import java.util.Set;
 import java.util.UUID;
 
 import lombok.Data;

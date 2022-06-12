@@ -13,6 +13,7 @@ import com.flightplanning.flight.dto.AircraftDto;
 import com.flightplanning.flight.dto.AirlineDto;
 import com.flightplanning.flight.dto.AirportDto;
 import com.flightplanning.flight.dto.FlightDto;
+import com.flightplanning.flight.dto.FlightRequestDto;
 import com.flightplanning.flight.model.Flight;
 import com.flightplanning.flight.repository.FlightRepository;
 import com.flightplanning.flight.service.AirlineService;
@@ -46,29 +47,28 @@ public class FlightServiceImpl implements FlightService {
 		List<AirlineDto> airlines = airlineService.getAllAirlines();
 		List<AirportDto> airports = airportService.getAllAirports();
 		for (AirlineDto airline : airlines) {
-			List<FlightDto> createdFlights = createFlight(airline, airline.getAircrafts(), airports);
-			repository.saveAll(createdFlights.stream().map(flight -> mapper.map(flight, Flight.class))
-					.collect(Collectors.toList()));
-			plannedFlights.addAll(createdFlights);
+			List<FlightRequestDto> createdFlights = createFlight(airline, airline.getAircrafts(), airports);
+			List<Flight> flightList = repository.saveAll(createdFlights.stream().map(flight -> mapper.map(flight, Flight.class)).collect(Collectors.toList()));
+			plannedFlights.addAll(flightList.stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList()));
 		}
 		return plannedFlights;
 	}
 
-	private List<FlightDto> createFlight(AirlineDto airline, List<AircraftDto> aircrafts, List<AirportDto> airports) {
-		List<FlightDto> createdFlights = new ArrayList<>();
+	private List<FlightRequestDto> createFlight(AirlineDto airline, List<AircraftDto> aircrafts, List<AirportDto> airports) {
+		List<FlightRequestDto> createdFlights = new ArrayList<>();
 		int count = 0;
 		for (AircraftDto aircraft : aircrafts) {
 			if (count == MAX_FLIGHT_COUNT)
 				break;
-			FlightDto flight = new FlightDto();
-			flight.setSource(AirportSelector.select(airports, null));
-			flight.setDestination(AirportSelector.select(airports, flight.getSource()));
-			flight.setCode(FlightCodeGenerator.generate(airline.getIataCode()));
-			flight.setAircraft(aircraft);
-			flight.setAirline(airline);
-			flight.setFlightDate(LocalDate.now());
-			flight.setFlightTime(LocalTimeGenerator.generate());
-			createdFlights.add(flight);
+			FlightRequestDto flightRequest = new FlightRequestDto();
+			flightRequest.setSource(AirportSelector.select(airports, null));
+			flightRequest.setDestination(AirportSelector.select(airports, flightRequest.getSource()));
+			flightRequest.setCode(FlightCodeGenerator.generate(airline.getIataCode()));
+			flightRequest.setAircraft(aircraft);
+			flightRequest.setAirline(airline);
+			flightRequest.setFlightDate(LocalDate.now());
+			flightRequest.setFlightTime(LocalTimeGenerator.generate());
+			createdFlights.add(flightRequest);
 			count++;
 		}
 		return createdFlights;
