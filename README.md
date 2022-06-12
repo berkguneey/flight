@@ -17,6 +17,7 @@ Using API For Airports in a Country: https://airlabs.co/api/v9/airports?api_key=
 * Java 8
 * H2 (In-memory database with initial data)
 * Maven
+* Junit 5
 * Docker
 
 ### Executing program
