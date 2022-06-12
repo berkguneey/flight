@@ -39,7 +39,7 @@ public class FlightServiceImpl implements FlightService {
 		this.mapper = mapper;
 	}
 
-	@Scheduled(cron = "0 0 * * *") // At 00:00
+	@Scheduled(cron = "0 0 0 * * *") // At 00:00:00
 	@Override
 	public List<FlightDto> createPlan() {
 		List<FlightDto> plannedFlights = new ArrayList<>();
