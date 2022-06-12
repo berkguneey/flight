@@ -11,6 +11,6 @@ public class AircraftModelDto {
 	private String icaoCode;
 	private String iataCode;
 	private String model;
-	//private List<AircraftDto> aircrafts;
+	//private List<AircraftDto> aircrafts; // lazy
 
 }

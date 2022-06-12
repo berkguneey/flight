@@ -11,6 +11,6 @@ public class CountryDto {
 	private String name;
 	private String iso2;
 	private String iso3;
-	//private List<AirportDto> airports;
+	//private List<AirportDto> airports; // lazy
 
 }
