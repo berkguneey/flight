@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.flightplanning.flight.dto.FlightDto;
 import com.flightplanning.flight.service.FlightService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(tags = "Flight Controller")
 @RestController
 @RequestMapping("/api/v0/flights")
 public class FlightController {
@@ -23,6 +27,7 @@ public class FlightController {
 		this.service = service;
 	}
 
+	@ApiOperation(value = "Create flight plan simulation")
 	@GetMapping()
 	public ResponseEntity<List<FlightDto>> createPlan() {
 		return new ResponseEntity<>(service.createPlan(), HttpStatus.OK);
