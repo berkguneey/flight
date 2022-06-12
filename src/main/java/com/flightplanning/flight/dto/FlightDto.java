@@ -2,7 +2,6 @@ package com.flightplanning.flight.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,7 +12,7 @@ import lombok.Data;
 public class FlightDto {
 
 	@JsonIgnore
-	private UUID id;
+	//private UUID id;
 	private String code;
 	@JsonIgnore
 	private AirlineDto airline;

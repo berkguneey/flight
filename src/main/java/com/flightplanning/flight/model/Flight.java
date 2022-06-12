@@ -15,9 +15,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.sun.istack.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Flight {
 	

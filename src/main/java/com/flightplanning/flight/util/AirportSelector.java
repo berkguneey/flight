@@ -1,5 +1,6 @@
 package com.flightplanning.flight.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -8,11 +9,11 @@ import com.flightplanning.flight.dto.AirportDto;
 public class AirportSelector {
 
 	public static AirportDto select(List<AirportDto> airports, AirportDto excludeElement) {
-		List<AirportDto> clone = airports;
+		List<AirportDto> copy = new ArrayList<>(airports);
 		final Random randomGenerator = new Random();
-		clone.remove(excludeElement);
-		int index = randomGenerator.nextInt(airports.size());
-		return clone.get(index);
+		copy.remove(excludeElement);
+		int index = randomGenerator.nextInt(copy.size());
+		return copy.get(index);
 	}
 
 }
