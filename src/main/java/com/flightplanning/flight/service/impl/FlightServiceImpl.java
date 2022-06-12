@@ -16,6 +16,7 @@ import com.flightplanning.flight.dto.FlightDto;
 import com.flightplanning.flight.dto.FlightRequestDto;
 import com.flightplanning.flight.model.Flight;
 import com.flightplanning.flight.repository.FlightRepository;
+import com.flightplanning.flight.service.AircraftService;
 import com.flightplanning.flight.service.AirlineService;
 import com.flightplanning.flight.service.AirportService;
 import com.flightplanning.flight.service.FlightService;
@@ -30,13 +31,15 @@ public class FlightServiceImpl implements FlightService {
 	private final FlightRepository repository;
 	private final AirlineService airlineService;
 	private final AirportService airportService;
+	private final AircraftService aircraftService;
 	private final ModelMapper mapper;
 
 	public FlightServiceImpl(FlightRepository repository, AirlineService airlineService, AirportService airportService,
-			ModelMapper mapper) {
+			AircraftService aircraftService, ModelMapper mapper) {
 		this.repository = repository;
 		this.airlineService = airlineService;
 		this.airportService = airportService;
+		this.aircraftService = aircraftService;
 		this.mapper = mapper;
 	}
 
@@ -47,14 +50,18 @@ public class FlightServiceImpl implements FlightService {
 		List<AirlineDto> airlines = airlineService.getAllAirlines();
 		List<AirportDto> airports = airportService.getAllAirports();
 		for (AirlineDto airline : airlines) {
-			List<FlightRequestDto> createdFlights = createFlight(airline, airline.getAircrafts(), airports);
-			List<Flight> flightList = repository.saveAll(createdFlights.stream().map(flight -> mapper.map(flight, Flight.class)).collect(Collectors.toList()));
-			plannedFlights.addAll(flightList.stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList()));
+			List<FlightRequestDto> createdFlights = createFlight(airline,
+					aircraftService.getAircraftsByAirlineId(airline.getId()), airports);
+			List<Flight> flightList = repository.saveAll(createdFlights.stream()
+					.map(flight -> mapper.map(flight, Flight.class)).collect(Collectors.toList()));
+			plannedFlights.addAll(flightList.stream().map(flight -> mapper.map(flight, FlightDto.class))
+					.collect(Collectors.toList()));
 		}
 		return plannedFlights;
 	}
 
-	private List<FlightRequestDto> createFlight(AirlineDto airline, List<AircraftDto> aircrafts, List<AirportDto> airports) {
+	private List<FlightRequestDto> createFlight(AirlineDto airline, List<AircraftDto> aircrafts,
+			List<AirportDto> airports) {
 		List<FlightRequestDto> createdFlights = new ArrayList<>();
 		int count = 0;
 		for (AircraftDto aircraft : aircrafts) {

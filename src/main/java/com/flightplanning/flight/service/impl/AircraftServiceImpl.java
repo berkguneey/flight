@@ -1,6 +1,7 @@
 package com.flightplanning.flight.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,12 @@ public class AircraftServiceImpl implements AircraftService {
 	public List<AircraftDto> getAllAircrafts() {
 		return repository.findAll().stream().map(aircraft -> mapper.map(aircraft, AircraftDto.class))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AircraftDto> getAircraftsByAirlineId(UUID airlineId) {
+		return repository.findAircraftsByAirlineId(airlineId).stream()
+				.map(aircraft -> mapper.map(aircraft, AircraftDto.class)).collect(Collectors.toList());
 	}
 
 }

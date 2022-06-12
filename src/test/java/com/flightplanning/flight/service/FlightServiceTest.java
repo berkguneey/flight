@@ -1,5 +1,6 @@
 package com.flightplanning.flight.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +23,7 @@ import com.flightplanning.flight.dto.AircraftDto;
 import com.flightplanning.flight.dto.AirlineDto;
 import com.flightplanning.flight.dto.AirportDto;
 import com.flightplanning.flight.repository.FlightRepository;
+import com.flightplanning.flight.service.impl.AircraftServiceImpl;
 import com.flightplanning.flight.service.impl.AirlineServiceImpl;
 import com.flightplanning.flight.service.impl.AirportServiceImpl;
 import com.flightplanning.flight.service.impl.FlightServiceImpl;
@@ -35,6 +37,8 @@ class FlightServiceTest {
 	AirlineServiceImpl airlineService;
 	@Mock
 	AirportServiceImpl airportService;
+	@Mock
+	AircraftServiceImpl aircraftService;
 	@Spy
 	ModelMapper mapper = new ModelMapper();
 	@InjectMocks
@@ -67,14 +71,12 @@ class FlightServiceTest {
 		airline1.setIataCode("XXX");
 		airline1.setName("TEST1");
 		airline1.setCreatedAt(LocalDateTime.now());
-		airline1.setAircrafts(aircraftList);
 
 		airline2 = new AirlineDto();
 		airline2.setId(UUID.randomUUID());
 		airline2.setIataCode("YYY");
 		airline2.setName("TEST2");
 		airline2.setCreatedAt(LocalDateTime.now());
-		airline2.setAircrafts(aircraftList);
 
 		airlineList = new ArrayList<>(Arrays.asList(airline1, airline2));
 
@@ -99,6 +101,7 @@ class FlightServiceTest {
 	public void testCreatePlan() {
 		when(airlineService.getAllAirlines()).thenReturn(airlineList);
 		when(airportService.getAllAirports()).thenReturn(airportList);
+		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
 		assertNotNull(service.createPlan());
 	}
 

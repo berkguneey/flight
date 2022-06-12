@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -41,7 +40,7 @@ public class Airline {
 	@Column(nullable = false)
 	private String name;
 
-	@OneToMany(mappedBy = "airline", targetEntity = Aircraft.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "airline", targetEntity = Aircraft.class, cascade = CascadeType.ALL)
 	private List<Aircraft> aircrafts = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "airline", targetEntity = Flight.class, cascade = CascadeType.ALL)

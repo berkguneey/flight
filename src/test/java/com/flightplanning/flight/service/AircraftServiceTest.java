@@ -2,6 +2,7 @@ package com.flightplanning.flight.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -53,6 +54,13 @@ class AircraftServiceTest {
 	public void testGetAllAircrafts() {
 		when(repository.findAll()).thenReturn(aircraftList);
 		assertNotNull(service.getAllAircrafts());
+		assertEquals(2, aircraftList.size());
+	}
+	
+	@Test
+	public void testGetAircraftsByAirlineId() {
+		when(repository.findAircraftsByAirlineId(any())).thenReturn(aircraftList);
+		assertNotNull(service.getAircraftsByAirlineId(UUID.randomUUID()));
 		assertEquals(2, aircraftList.size());
 	}
 
