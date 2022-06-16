@@ -81,4 +81,10 @@ public class FlightServiceImpl implements FlightService {
 		return createdFlights;
 	}
 
+	@Override
+	public FlightDto createFlight(FlightRequestDto flightRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

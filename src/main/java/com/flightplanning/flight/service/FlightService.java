@@ -1,19 +1,19 @@
 package com.flightplanning.flight.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 import com.flightplanning.flight.dto.FlightDto;
+import com.flightplanning.flight.dto.FlightRequestDto;
 
 @Service
 public interface FlightService {
 
 	/**
-	 * This method is used to creating a daily flight plan.
+	 * This method is used to insert a new flight to the system.
 	 * 
-	 * @return flight list
+	 * @param flightRequest
+	 * @return flight
 	 */
-	List<FlightDto> createPlan();
+	FlightDto createFlight(FlightRequestDto flightRequest);
 
 }
