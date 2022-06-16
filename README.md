@@ -9,6 +9,10 @@ GET Request -> localhost:8080/api/v0/flights
 Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso  
 Using API For Airports in a Country: https://airlabs.co/api/v9/airports?api_key={apiKey}?country_code={countryISO2}
 
+All countries and all airports in Turkey, Spain, Italy, Poland, Sweden and Swiss have been added to the system.
+
+![Untitled](https://user-images.githubusercontent.com/32336289/173224887-98e8bf60-e882-4061-ab81-e7fa90eeeb71.png)
+
 ## Getting Started
 
 ### Using
