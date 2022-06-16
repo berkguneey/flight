@@ -45,9 +45,7 @@ public class FlightServiceImpl implements FlightService {
 	@Override
 	public FlightDto createFlight(FlightRequestDto flightRequest) {
 
-		checkFlightCount(flightRequest.getAirportSourceId(), flightRequest.getAirportDestinationId(), flightRequest.getFlightDate());
-		
-		checkAircraftOwnershipByAirlineId(flightRequest.getAirlineId(), flightRequest.getAircraftId());
+		checkFlight(flightRequest);
 
 		Airline airline = mapper.map(airlineService.getAirlineById(flightRequest.getAirlineId()), Airline.class);
 
@@ -60,6 +58,8 @@ public class FlightServiceImpl implements FlightService {
 		mFlight.setFlightDate(flightRequest.getFlightDate());
 		mFlight.setFlightTime(flightRequest.getFlightTime());
 
+		aircraftService.updateAircraft(flightRequest.getAircraftId(), true);
+
 		return mapper.map(repository.save(mFlight), FlightDto.class);
 	}
 
@@ -67,16 +67,21 @@ public class FlightServiceImpl implements FlightService {
 		return repository.countFlightBySourceIdAndDestinationId(sourceId, destinationId, flightDate);
 	}
 
-	private void checkFlightCount(UUID sourceId, UUID destinationId, LocalDate flightDate) {
-		if (MAX_FLIGHT_COUNT == countFlightBySourceIdAndDestinationId(sourceId, destinationId, flightDate)) {
-			throw new BusinessException(ErrorConstants.FLIGHT_INVALID);
+	private void checkFlight(FlightRequestDto flightRequest) {
+		if (flightRequest.getAirportSourceId().equals(flightRequest.getAirportDestinationId())) {
+			throw new BusinessException(ErrorConstants.AIRPORT_SELECTION_INVALID);
 		}
-	}
-
-	private void checkAircraftOwnershipByAirlineId(UUID airlineId, UUID aircraftId) {
-		List<AircraftDto> aircrafts = aircraftService.getAircraftsByAirlineId(airlineId);
-		if (!aircrafts.stream().anyMatch(a -> a.getId().equals(aircraftId))) {
+		List<AircraftDto> aircrafts = aircraftService.getAircraftsByAirlineId(flightRequest.getAirlineId());
+		if (!aircrafts.stream().anyMatch(a -> a.getId().equals(flightRequest.getAircraftId()))) {
 			throw new BusinessException(ErrorConstants.AIRCRAFT_AIRLINE_DISMATCH);
+		}
+		AircraftDto aircraft = aircraftService.getAircraftById(flightRequest.getAircraftId());
+		if (aircraft.isFlightPlanned()) {
+			throw new BusinessException(ErrorConstants.AIRCRAFT_ALREADY_PLANNED);
+		}
+		if (MAX_FLIGHT_COUNT == countFlightBySourceIdAndDestinationId(flightRequest.getAirportSourceId(),
+				flightRequest.getAirportDestinationId(), flightRequest.getFlightDate())) {
+			throw new BusinessException(ErrorConstants.PLANNED_FLIGHT_INVALID);
 		}
 	}
 

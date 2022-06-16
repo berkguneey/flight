@@ -35,6 +35,10 @@ public class Aircraft {
 	@NotNull
 	@Column(nullable = false, unique = true)
 	private String licensePlate;
+	
+	@NotNull
+	@Column(nullable = false)
+	private boolean isFlightPlanned = false;
 
 	@ManyToOne
 	@JoinColumn(name = "aircraftModelId")
