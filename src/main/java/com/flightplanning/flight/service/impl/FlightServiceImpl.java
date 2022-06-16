@@ -1,33 +1,32 @@
 package com.flightplanning.flight.service.impl;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.flightplanning.flight.constant.ErrorConstants;
 import com.flightplanning.flight.dto.AircraftDto;
-import com.flightplanning.flight.dto.AirlineDto;
-import com.flightplanning.flight.dto.AirportDto;
 import com.flightplanning.flight.dto.FlightDto;
 import com.flightplanning.flight.dto.FlightRequestDto;
+import com.flightplanning.flight.exception.BusinessException;
+import com.flightplanning.flight.model.Aircraft;
+import com.flightplanning.flight.model.Airline;
+import com.flightplanning.flight.model.Airport;
 import com.flightplanning.flight.model.Flight;
 import com.flightplanning.flight.repository.FlightRepository;
 import com.flightplanning.flight.service.AircraftService;
 import com.flightplanning.flight.service.AirlineService;
 import com.flightplanning.flight.service.AirportService;
 import com.flightplanning.flight.service.FlightService;
-import com.flightplanning.flight.util.AirportSelector;
 import com.flightplanning.flight.util.FlightCodeGenerator;
-import com.flightplanning.flight.util.LocalTimeGenerator;
 
 @Service
 public class FlightServiceImpl implements FlightService {
 
-	private static final int MAX_FLIGHT_COUNT = 3;
+	private static final long MAX_FLIGHT_COUNT = 3L;
 	private final FlightRepository repository;
 	private final AirlineService airlineService;
 	private final AirportService airportService;
@@ -43,48 +42,42 @@ public class FlightServiceImpl implements FlightService {
 		this.mapper = mapper;
 	}
 
-	@Scheduled(cron = "0 0 0 * * *") // At 00:00:00
-	@Override
-	public List<FlightDto> createPlan() {
-		List<FlightDto> plannedFlights = new ArrayList<>();
-		List<AirlineDto> airlines = airlineService.getAllAirlines();
-		List<AirportDto> airports = airportService.getAllAirports();
-		for (AirlineDto airline : airlines) {
-			List<FlightRequestDto> createdFlights = createFlight(airline,
-					aircraftService.getAircraftsByAirlineId(airline.getId()), airports);
-			List<Flight> flightList = repository.saveAll(createdFlights.stream()
-					.map(flight -> mapper.map(flight, Flight.class)).collect(Collectors.toList()));
-			plannedFlights.addAll(flightList.stream().map(flight -> mapper.map(flight, FlightDto.class))
-					.collect(Collectors.toList()));
-		}
-		return plannedFlights;
-	}
-
-	private List<FlightRequestDto> createFlight(AirlineDto airline, List<AircraftDto> aircrafts,
-			List<AirportDto> airports) {
-		List<FlightRequestDto> createdFlights = new ArrayList<>();
-		int count = 0;
-		for (AircraftDto aircraft : aircrafts) {
-			if (count == MAX_FLIGHT_COUNT)
-				break;
-			FlightRequestDto flightRequest = new FlightRequestDto();
-			flightRequest.setSource(AirportSelector.select(airports, null));
-			flightRequest.setDestination(AirportSelector.select(airports, flightRequest.getSource()));
-			flightRequest.setCode(FlightCodeGenerator.generate(airline.getIataCode()));
-			flightRequest.setAircraft(aircraft);
-			flightRequest.setAirline(airline);
-			flightRequest.setFlightDate(LocalDate.now());
-			flightRequest.setFlightTime(LocalTimeGenerator.generate());
-			createdFlights.add(flightRequest);
-			count++;
-		}
-		return createdFlights;
-	}
-
 	@Override
 	public FlightDto createFlight(FlightRequestDto flightRequest) {
-		// TODO Auto-generated method stub
-		return null;
+
+		checkFlightCount(flightRequest.getAirportSourceId(), flightRequest.getAirportDestinationId(), flightRequest.getFlightDate());
+		
+		checkAircraftOwnershipByAirlineId(flightRequest.getAirlineId(), flightRequest.getAircraftId());
+
+		Airline airline = mapper.map(airlineService.getAirlineById(flightRequest.getAirlineId()), Airline.class);
+
+		Flight mFlight = new Flight();
+		mFlight.setCode(FlightCodeGenerator.generate(airline.getIataCode()));
+		mFlight.setAircraft(mapper.map(aircraftService.getAircraftById(flightRequest.getAircraftId()), Aircraft.class));
+		mFlight.setAirline(airline);
+		mFlight.setSource(mapper.map(airportService.getAirportById(flightRequest.getAirportSourceId()), Airport.class));
+		mFlight.setDestination(mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
+		mFlight.setFlightDate(flightRequest.getFlightDate());
+		mFlight.setFlightTime(flightRequest.getFlightTime());
+
+		return mapper.map(repository.save(mFlight), FlightDto.class);
+	}
+
+	private long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, LocalDate flightDate) {
+		return repository.countFlightBySourceIdAndDestinationId(sourceId, destinationId, flightDate);
+	}
+
+	private void checkFlightCount(UUID sourceId, UUID destinationId, LocalDate flightDate) {
+		if (MAX_FLIGHT_COUNT == countFlightBySourceIdAndDestinationId(sourceId, destinationId, flightDate)) {
+			throw new BusinessException(ErrorConstants.FLIGHT_INVALID);
+		}
+	}
+
+	private void checkAircraftOwnershipByAirlineId(UUID airlineId, UUID aircraftId) {
+		List<AircraftDto> aircrafts = aircraftService.getAircraftsByAirlineId(airlineId);
+		if (!aircrafts.stream().anyMatch(a -> a.getId().equals(aircraftId))) {
+			throw new BusinessException(ErrorConstants.AIRCRAFT_AIRLINE_DISMATCH);
+		}
 	}
 
 }

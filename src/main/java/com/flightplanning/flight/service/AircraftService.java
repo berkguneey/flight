@@ -24,5 +24,13 @@ public interface AircraftService {
 	 * @return airport list
 	 */
 	List<AircraftDto> getAircraftsByAirlineId(UUID airlineId);
+	
+	/**
+	 * This method is used to get aircraft with using the entered id data.
+	 * 
+	 * @param id
+	 * @return aircraft
+	 */
+	AircraftDto getAircraftById(UUID id);
 
 }

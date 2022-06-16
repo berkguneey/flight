@@ -27,8 +27,8 @@ public class FlightController {
 		this.service = service;
 	}
 	
-	@ApiOperation(value = "Create flight")
-	@PostMapping()
+	@ApiOperation(value = "Create Flight")
+	@PostMapping
 	public ResponseEntity<FlightDto> createFlight(@RequestBody FlightRequestDto flightRequest) {
 		return new ResponseEntity<>(service.createFlight(flightRequest), HttpStatus.OK);
 	}

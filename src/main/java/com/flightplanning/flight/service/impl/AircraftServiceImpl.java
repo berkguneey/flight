@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.flightplanning.flight.constant.ErrorConstants;
 import com.flightplanning.flight.dto.AircraftDto;
+import com.flightplanning.flight.exception.NoDataFoundException;
 import com.flightplanning.flight.repository.AircraftRepository;
 import com.flightplanning.flight.service.AircraftService;
 
@@ -32,6 +34,13 @@ public class AircraftServiceImpl implements AircraftService {
 	public List<AircraftDto> getAircraftsByAirlineId(UUID airlineId) {
 		return repository.findAircraftsByAirlineId(airlineId).stream()
 				.map(aircraft -> mapper.map(aircraft, AircraftDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public AircraftDto getAircraftById(UUID id) {
+		return mapper.map(
+				repository.findById(id).orElseThrow(() -> new NoDataFoundException(ErrorConstants.AIRCRAFT_NOT_FOUND)),
+				AircraftDto.class);
 	}
 
 }

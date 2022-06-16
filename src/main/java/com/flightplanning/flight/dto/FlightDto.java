@@ -16,7 +16,7 @@ public class FlightDto {
 	private AirlineDto airline;
 	private AirportDto source;
 	private AirportDto destination;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate flightDate;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime flightTime;

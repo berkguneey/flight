@@ -1,9 +1,5 @@
 package com.flightplanning.flight.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,10 +95,7 @@ class FlightServiceTest {
 
 	@Test
 	public void testCreatePlan() {
-		when(airlineService.getAllAirlines()).thenReturn(airlineList);
-		when(airportService.getAllAirports()).thenReturn(airportList);
-		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
-		assertNotNull(service.createPlan());
+		
 	}
 
 }
