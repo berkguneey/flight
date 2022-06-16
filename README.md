@@ -6,13 +6,13 @@ In this application, we want to design a small-scale airway flight planning syst
 
 POST Request -> localhost:8080/api/v0/flights
 
-{
-    "airlineId": "fc2e0d68-1352-4dc9-8224-b585cf3a257b",
-    "aircraftId": "6c05786a-c15d-474e-9cdf-bab199b2b2c9",
-    "airportDestinationId": "3dbc4cdd-2c24-4930-bc65-4d2001943d9f",
-    "airportSourceId": "9fdafcfb-4395-416b-9187-fdb7b2e7c0d2",
-    "flightDate": "17-02-2022",
-    "flightTime": "10:00:00"
+{  
+    "airlineId": "fc2e0d68-1352-4dc9-8224-b585cf3a257b",  
+    "aircraftId": "6c05786a-c15d-474e-9cdf-bab199b2b2c9",  
+    "airportDestinationId": "3dbc4cdd-2c24-4930-bc65-4d2001943d9f",  
+    "airportSourceId": "9fdafcfb-4395-416b-9187-fdb7b2e7c0d2",  
+    "flightDate": "17-02-2022",  
+    "flightTime": "10:00:00"  
 }
 
 Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso  
