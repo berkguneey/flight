@@ -1,18 +1,29 @@
 # Airway Flight Planning Backend Application
 
-In this application, we want to design a small-scale airway flight planning system. It plans that the aircrafts of airline companies will fly from where to where.
+In this application, we want to design a small-scale airway flight planning system. It plans that the aircrafts of airline companies will fly from where to where within certain rules.
+
+* There must be daily at most 3 flights for an airline between 2 destinations.
+* The aircraft must be owned by an airline.
+* The aircraft must not be on another flight at the same time.
+* The aircraft cannot make a new flight before returning to the source airport.
+* The source airport and the destination airport should not be the same.
 
 ## Description
 
-POST Request -> localhost:8080/api/v0/flights
+* GET Airlines Request -> localhost:8080/api/v0/airlines
+* GET Airports Request -> localhost:8080/api/v0/airports
+* GET Aircrafts Request -> localhost:8080/api/v0/aircrafts
+* POST Create Flight Request -> localhost:8080/api/v0/flights
+
+Create Flight Sample POST Request ->
 
 {  
-    "airlineId": "fc2e0d68-1352-4dc9-8224-b585cf3a257b",  
-    "aircraftId": "6c05786a-c15d-474e-9cdf-bab199b2b2c9",  
-    "airportDestinationId": "3dbc4cdd-2c24-4930-bc65-4d2001943d9f",  
-    "airportSourceId": "9fdafcfb-4395-416b-9187-fdb7b2e7c0d2",  
-    "flightDate": "17-02-2022",  
-    "flightTime": "10:00:00"  
+&emsp;&emsp;"airlineId": "fc2e0d68-1352-4dc9-8224-b585cf3a257b",  
+&emsp;&emsp;"aircraftId": "6c05786a-c15d-474e-9cdf-bab199b2b2c9",  
+&emsp;&emsp;"airportDestinationId": "3dbc4cdd-2c24-4930-bc65-4d2001943d9f",  
+&emsp;&emsp;"airportSourceId": "9fdafcfb-4395-416b-9187-fdb7b2e7c0d2",  
+&emsp;&emsp;"flightDate": "17-02-2022",  
+&emsp;&emsp;"flightTime": "10:00:00"  
 }
 
 Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso  
@@ -34,12 +45,6 @@ All countries and all airports in Turkey, Spain, Italy, Poland, Sweden and Swiss
 * Docker
 
 ### Executing program
-
-* This command executes the application with scheduler mode. For this reason, program is expected to run at midnight every day. (00:00)
-* If you want to work without scheduler mode, this command should be commented out. (or can be set false)
-```
-scheduler.enabled=true
-```
 
 * The application can be run locally or in a docker container, the requirements for each setup are listed below.
 * You can execute the program on 8080 port with Docker. Go to the project folder then execute following commands.
