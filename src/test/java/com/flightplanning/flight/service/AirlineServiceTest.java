@@ -2,12 +2,15 @@ package com.flightplanning.flight.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +22,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import com.flightplanning.flight.exception.NoDataFoundException;
 import com.flightplanning.flight.model.Airline;
 import com.flightplanning.flight.repository.AirlineRepository;
 import com.flightplanning.flight.service.impl.AirlineServiceImpl;
@@ -59,6 +63,18 @@ class AirlineServiceTest {
 		when(repository.findAll()).thenReturn(airlineList);
 		assertNotNull(service.getAllAirlines());
 		assertEquals(2, airlineList.size());
+	}
+	
+	@Test
+	public void testGetAirlineById() {
+		when(repository.findById(any())).thenReturn(Optional.of(airline1));
+		assertNotNull(service.getAirlineById(UUID.randomUUID()));
+	}
+	
+	@Test
+	public void testGetAirlineById_ReturnNoDataFoundException() {
+		when(repository.findById(any())).thenReturn(Optional.empty());
+		assertThrows(NoDataFoundException.class, () -> service.getAirlineById(UUID.randomUUID()));
 	}
 
 }

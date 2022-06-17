@@ -32,13 +32,5 @@ public interface AircraftService {
 	 * @return aircraft
 	 */
 	AircraftDto getAircraftById(UUID id);
-	
-	/**
-	 * This method is used to update a flight planned flag of aircraft with using the entered id data.
-	 * 
-	 * @param id
-	 * @return aircraft
-	 */
-	AircraftDto updateAircraft(UUID id, boolean isFlightPlanned);
 
 }

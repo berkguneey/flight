@@ -11,7 +11,6 @@ public class AircraftDto {
 	private String licensePlate;
 	private AircraftModelDto aircraftModel;
 	private AirlineDto airline;
-	private boolean isFlightPlanned;
 	//private List<FlightDto> flights; // lazy
 
 }

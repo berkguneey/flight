@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.flightplanning.flight.constant.ErrorConstants;
 import com.flightplanning.flight.dto.AircraftDto;
 import com.flightplanning.flight.exception.NoDataFoundException;
-import com.flightplanning.flight.model.Aircraft;
 import com.flightplanning.flight.repository.AircraftRepository;
 import com.flightplanning.flight.service.AircraftService;
 
@@ -42,13 +41,6 @@ public class AircraftServiceImpl implements AircraftService {
 		return mapper.map(
 				repository.findById(id).orElseThrow(() -> new NoDataFoundException(ErrorConstants.AIRCRAFT_NOT_FOUND)),
 				AircraftDto.class);
-	}
-
-	@Override
-	public AircraftDto updateAircraft(UUID id, boolean isFlightPlanned) {
-		Aircraft mAircraft = mapper.map(getAircraftById(id), Aircraft.class);
-		mAircraft.setFlightPlanned(isFlightPlanned);
-		return mapper.map(repository.save(mAircraft), AircraftDto.class);
 	}
 
 }

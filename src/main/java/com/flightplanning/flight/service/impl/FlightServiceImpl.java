@@ -3,6 +3,7 @@ package com.flightplanning.flight.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -54,17 +55,32 @@ public class FlightServiceImpl implements FlightService {
 		mFlight.setAircraft(mapper.map(aircraftService.getAircraftById(flightRequest.getAircraftId()), Aircraft.class));
 		mFlight.setAirline(airline);
 		mFlight.setSource(mapper.map(airportService.getAirportById(flightRequest.getAirportSourceId()), Airport.class));
-		mFlight.setDestination(mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
+		mFlight.setDestination(
+				mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
 		mFlight.setFlightDate(flightRequest.getFlightDate());
 		mFlight.setFlightTime(flightRequest.getFlightTime());
-
-		aircraftService.updateAircraft(flightRequest.getAircraftId(), true);
 
 		return mapper.map(repository.save(mFlight), FlightDto.class);
 	}
 
-	private long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, LocalDate flightDate) {
-		return repository.countFlightBySourceIdAndDestinationId(sourceId, destinationId, flightDate);
+	private long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, UUID airlineId, LocalDate flightDate) {
+		return repository.countFlightBySourceIdAndDestinationId(sourceId, destinationId, airlineId, flightDate);
+	}
+
+	private boolean isAircraftBusy(FlightRequestDto flightRequest) {
+		boolean isAircraftBusy = false;
+		List<FlightDto> flights = repository.findFlightByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate()).stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
+		if(flights.size() % 2 == 0) {
+			return false;
+		}
+		for (FlightDto flight : flights) {
+			if (flight.getFlightDate().equals(flightRequest.getFlightDate())) {
+				if (!(flight.getSource().getId().equals(flightRequest.getAirportDestinationId()) && flight.getDestination().getId().equals(flightRequest.getAirportSourceId())) || flight.getFlightTime().equals(flightRequest.getFlightTime())) {
+					isAircraftBusy = true;
+				}
+			}
+		}
+		return isAircraftBusy;
 	}
 
 	private void checkFlight(FlightRequestDto flightRequest) {
@@ -75,13 +91,12 @@ public class FlightServiceImpl implements FlightService {
 		if (!aircrafts.stream().anyMatch(a -> a.getId().equals(flightRequest.getAircraftId()))) {
 			throw new BusinessException(ErrorConstants.AIRCRAFT_AIRLINE_DISMATCH);
 		}
-		AircraftDto aircraft = aircraftService.getAircraftById(flightRequest.getAircraftId());
-		if (aircraft.isFlightPlanned()) {
-			throw new BusinessException(ErrorConstants.AIRCRAFT_ALREADY_PLANNED);
-		}
 		if (MAX_FLIGHT_COUNT == countFlightBySourceIdAndDestinationId(flightRequest.getAirportSourceId(),
-				flightRequest.getAirportDestinationId(), flightRequest.getFlightDate())) {
+				flightRequest.getAirportDestinationId(), flightRequest.getAirlineId(), flightRequest.getFlightDate())) {
 			throw new BusinessException(ErrorConstants.PLANNED_FLIGHT_INVALID);
+		}
+		if (isAircraftBusy(flightRequest)) {
+			throw new BusinessException(ErrorConstants.AIRCRAFT_ALREADY_PLANNED);
 		}
 	}
 
