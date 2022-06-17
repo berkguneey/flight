@@ -16,6 +16,6 @@ public interface FlightRepository extends JpaRepository<Flight, UUID> {
 	@Query(value = "SELECT COUNT(*) FROM FLIGHT F WHERE ((F.SOURCE_ID = ?1 AND F.DESTINATION_ID = ?2) OR (F.DESTINATION_ID = ?1 AND F.SOURCE_ID = ?2)) AND F.AIRLINE_ID = ?3 AND F.FLIGHT_DATE = ?4", nativeQuery = true)
 	long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, UUID airlineId, LocalDate flightDate);
 	
-	List<Flight> findFlightByAircraftIdAndFlightDate(UUID aircraftId, LocalDate flightDate);
+	List<Flight> findFlightsByAircraftIdAndFlightDate(UUID aircraftId, LocalDate flightDate);
 
 }

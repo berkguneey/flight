@@ -1,6 +1,13 @@
 package com.flightplanning.flight.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +25,11 @@ import org.modelmapper.ModelMapper;
 import com.flightplanning.flight.dto.AircraftDto;
 import com.flightplanning.flight.dto.AirlineDto;
 import com.flightplanning.flight.dto.AirportDto;
+import com.flightplanning.flight.dto.FlightRequestDto;
+import com.flightplanning.flight.exception.BusinessException;
+import com.flightplanning.flight.model.Airline;
+import com.flightplanning.flight.model.Airport;
+import com.flightplanning.flight.model.Flight;
 import com.flightplanning.flight.repository.FlightRepository;
 import com.flightplanning.flight.service.impl.AircraftServiceImpl;
 import com.flightplanning.flight.service.impl.AirlineServiceImpl;
@@ -40,24 +52,36 @@ class FlightServiceTest {
 	@InjectMocks
 	FlightServiceImpl service;
 
+	FlightRequestDto flightRequest;
 	List<AircraftDto> aircraftList;
 	AircraftDto aircraft1;
 	AircraftDto aircraft2;
-	List<AirlineDto> airlineList;
+
 	AirlineDto airline1;
-	AirlineDto airline2;
-	List<AirportDto> airportList;
+
 	AirportDto airport1;
 	AirportDto airport2;
 
+	List<Flight> flightList;
+	Flight flight1;
+	Flight flight2;
+
 	@BeforeEach
 	public void setUp() {
+		flightRequest = new FlightRequestDto();
+		flightRequest.setAircraftId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4c"));
+		flightRequest.setAirlineId(UUID.randomUUID());
+		flightRequest.setAirportSourceId(UUID.randomUUID());
+		flightRequest.setAirportDestinationId(UUID.randomUUID());
+		flightRequest.setFlightDate(LocalDate.of(2022, 06, 17));
+		flightRequest.setFlightTime(LocalTime.of(10, 0, 0));
+
 		aircraft1 = new AircraftDto();
-		aircraft1.setId(UUID.randomUUID());
+		aircraft1.setId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4c"));
 		aircraft1.setLicensePlate("XXX");
 
 		aircraft2 = new AircraftDto();
-		aircraft2.setId(UUID.randomUUID());
+		aircraft2.setId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4c"));
 		aircraft2.setLicensePlate("YYY");
 
 		aircraftList = new ArrayList<>(Arrays.asList(aircraft1, aircraft2));
@@ -68,14 +92,6 @@ class FlightServiceTest {
 		airline1.setName("TEST1");
 		airline1.setCreatedAt(LocalDateTime.now());
 
-		airline2 = new AirlineDto();
-		airline2.setId(UUID.randomUUID());
-		airline2.setIataCode("YYY");
-		airline2.setName("TEST2");
-		airline2.setCreatedAt(LocalDateTime.now());
-
-		airlineList = new ArrayList<>(Arrays.asList(airline1, airline2));
-
 		airport1 = new AirportDto();
 		airport1.setId(UUID.randomUUID());
 		airport1.setIcaoCode("XXX");
@@ -85,17 +101,60 @@ class FlightServiceTest {
 
 		airport2 = new AirportDto();
 		airport2.setId(UUID.randomUUID());
-		airport2.setIcaoCode("XXX");
-		airport2.setIataCode("XXX");
-		airport2.setName("TEST1");
+		airport2.setIcaoCode("YYY");
+		airport2.setIataCode("YYY");
+		airport2.setName("TEST2");
 		airport2.setCreatedAt(LocalDateTime.now());
 
-		airportList = new ArrayList<>(Arrays.asList(airport1, airport2));
+		flight1 = new Flight();
+		flight1.setAirline(mapper.map(airline1, Airline.class));
+		flight1.setCode("XX");
+		flight1.setSource(mapper.map(airport1, Airport.class));
+		flight1.setDestination(mapper.map(airport2, Airport.class));
+		flight1.setFlightDate(LocalDate.of(2022, 06, 17));
+		flight1.setFlightTime(LocalTime.now());
 	}
 
 	@Test
 	public void testCreatePlan() {
-		// TODO
+		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
+		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
+		when(repository.findFlightsByAircraftIdAndFlightDate(any(), any())).thenReturn(new ArrayList<>());
+		when(aircraftService.getAircraftById(any())).thenReturn(aircraft1);
+		when(airportService.getAirportById(any())).thenReturn(airport1);
+		when(airlineService.getAirlineById(any())).thenReturn(airline1);
+		when(repository.save(any())).thenReturn(flight1);
+		assertNotNull(service.createFlight(flightRequest));
+	}
+
+	@Test
+	public void testCreatePlan_ReturnBusinessException_1016() {
+		flightRequest.setAirportSourceId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4d"));
+		flightRequest.setAirportDestinationId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4d"));
+		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
+	}
+
+	@Test
+	public void testCreatePlan_ReturnBusinessException_1014() {
+		flightRequest.setAircraftId(UUID.fromString("5fc03087-d265-11e7-b8c6-83e29cd24f4d"));
+		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
+		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
+	}
+
+	@Test
+	public void testCreatePlan_ReturnBusinessException_1017() {
+		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
+		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(3L);
+		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
+	}
+
+	@Test
+	public void testCreatePlan_ReturnBusinessException_1015() {
+		flight1.setFlightTime(LocalTime.of(10, 0, 0));
+		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
+		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
+		when(repository.findFlightsByAircraftIdAndFlightDate(any(), any())).thenReturn(Arrays.asList(flight1));
+		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
 	}
 
 }

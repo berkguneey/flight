@@ -69,7 +69,7 @@ public class FlightServiceImpl implements FlightService {
 
 	private boolean isAircraftBusy(FlightRequestDto flightRequest) {
 		boolean isAircraftBusy = false;
-		List<FlightDto> flights = repository.findFlightByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate()).stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
+		List<FlightDto> flights = repository.findFlightsByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate()).stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
 		if(flights.size() % 2 == 0) {
 			return false;
 		}
