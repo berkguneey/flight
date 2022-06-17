@@ -55,27 +55,30 @@ public class FlightServiceImpl implements FlightService {
 		mFlight.setAircraft(mapper.map(aircraftService.getAircraftById(flightRequest.getAircraftId()), Aircraft.class));
 		mFlight.setAirline(airline);
 		mFlight.setSource(mapper.map(airportService.getAirportById(flightRequest.getAirportSourceId()), Airport.class));
-		mFlight.setDestination(
-				mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
+		mFlight.setDestination(mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
 		mFlight.setFlightDate(flightRequest.getFlightDate());
 		mFlight.setFlightTime(flightRequest.getFlightTime());
 
 		return mapper.map(repository.save(mFlight), FlightDto.class);
 	}
 
-	private long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, UUID airlineId, LocalDate flightDate) {
-		return repository.countFlightBySourceIdAndDestinationId(sourceId, destinationId, airlineId, flightDate);
+	private long countFlightBySourceIdAndDestinationId(UUID sourceId, UUID destinationId, UUID airlineId,
+			LocalDate flightDate) {
+		return repository.countFlightsBySourceIdAndDestinationId(sourceId, destinationId, airlineId, flightDate);
 	}
 
 	private boolean isAircraftBusy(FlightRequestDto flightRequest) {
 		boolean isAircraftBusy = false;
-		List<FlightDto> flights = repository.findFlightsByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate()).stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
-		if(flights.size() % 2 == 0) {
+		List<FlightDto> flights = repository.findFlightsByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate())
+				.stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
+		if (flights.size() % 2 == 0) {
 			return false;
 		}
 		for (FlightDto flight : flights) {
 			if (flight.getFlightDate().equals(flightRequest.getFlightDate())) {
-				if (!(flight.getSource().getId().equals(flightRequest.getAirportDestinationId()) && flight.getDestination().getId().equals(flightRequest.getAirportSourceId())) || flight.getFlightTime().equals(flightRequest.getFlightTime())) {
+				if (!(flight.getSource().getId().equals(flightRequest.getAirportDestinationId())
+						&& flight.getDestination().getId().equals(flightRequest.getAirportSourceId()))
+						|| flight.getFlightTime().equals(flightRequest.getFlightTime())) {
 					isAircraftBusy = true;
 				}
 			}

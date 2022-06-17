@@ -118,7 +118,7 @@ class FlightServiceTest {
 	@Test
 	public void testCreatePlan() {
 		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
-		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
+		when(repository.countFlightsBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
 		when(repository.findFlightsByAircraftIdAndFlightDate(any(), any())).thenReturn(new ArrayList<>());
 		when(aircraftService.getAircraftById(any())).thenReturn(aircraft1);
 		when(airportService.getAirportById(any())).thenReturn(airport1);
@@ -144,7 +144,7 @@ class FlightServiceTest {
 	@Test
 	public void testCreatePlan_ReturnBusinessException_1017() {
 		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
-		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(3L);
+		when(repository.countFlightsBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(3L);
 		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
 	}
 
@@ -152,7 +152,7 @@ class FlightServiceTest {
 	public void testCreatePlan_ReturnBusinessException_1015() {
 		flight1.setFlightTime(LocalTime.of(10, 0, 0));
 		when(aircraftService.getAircraftsByAirlineId(any())).thenReturn(aircraftList);
-		when(repository.countFlightBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
+		when(repository.countFlightsBySourceIdAndDestinationId(any(), any(), any(), any())).thenReturn(0L);
 		when(repository.findFlightsByAircraftIdAndFlightDate(any(), any())).thenReturn(Arrays.asList(flight1));
 		assertThrows(BusinessException.class, () -> service.createFlight(flightRequest));
 	}
