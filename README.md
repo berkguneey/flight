@@ -23,7 +23,8 @@ Create Flight Sample POST Request ->
 &emsp;&emsp;"airportDestinationId": "3dbc4cdd-2c24-4930-bc65-4d2001943d9f",  
 &emsp;&emsp;"airportSourceId": "9fdafcfb-4395-416b-9187-fdb7b2e7c0d2",  
 &emsp;&emsp;"flightDate": "17-02-2022",  
-&emsp;&emsp;"flightTime": "10:00:00"  
+&emsp;&emsp;"flightTime": "10:00:00",  
+&emsp;&emsp;"flightDuration": 1  
 }
 
 Using API For Countries: https://countriesnow.space/api/v0.1/countries/iso  
