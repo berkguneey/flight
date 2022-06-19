@@ -1,6 +1,8 @@
 package com.flightplanning.flight.service.impl;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,9 +57,11 @@ public class FlightServiceImpl implements FlightService {
 		mFlight.setAircraft(mapper.map(aircraftService.getAircraftById(flightRequest.getAircraftId()), Aircraft.class));
 		mFlight.setAirline(airline);
 		mFlight.setSource(mapper.map(airportService.getAirportById(flightRequest.getAirportSourceId()), Airport.class));
-		mFlight.setDestination(mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
+		mFlight.setDestination(
+				mapper.map(airportService.getAirportById(flightRequest.getAirportDestinationId()), Airport.class));
 		mFlight.setFlightDate(flightRequest.getFlightDate());
 		mFlight.setFlightTime(flightRequest.getFlightTime());
+		mFlight.setFlightDuration(flightRequest.getFlightDuration());
 
 		return mapper.map(repository.save(mFlight), FlightDto.class);
 	}
@@ -68,22 +72,27 @@ public class FlightServiceImpl implements FlightService {
 	}
 
 	private boolean isAircraftBusy(FlightRequestDto flightRequest) {
-		boolean isAircraftBusy = false;
-		List<FlightDto> flights = repository.findFlightsByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate())
+		List<FlightDto> flights = repository
+				.findFlightsByAircraftIdAndFlightDate(flightRequest.getAircraftId(), flightRequest.getFlightDate())
 				.stream().map(flight -> mapper.map(flight, FlightDto.class)).collect(Collectors.toList());
-		if (flights.size() % 2 == 0) {
+
+		if (flights.isEmpty()) {
 			return false;
+		} else if (flights.stream().anyMatch(flight -> flight.getFlightTime().equals(flightRequest.getFlightTime()))) {
+			return true;
+		} else if (flights.stream().anyMatch(flight -> flight.getFlightTime()
+				.plus(Duration.ofHours(flight.getFlightDuration())).isAfter(flightRequest.getFlightTime()))) {
+			return true;
 		}
-		for (FlightDto flight : flights) {
-			if (flight.getFlightDate().equals(flightRequest.getFlightDate())) {
-				if (!(flight.getSource().getId().equals(flightRequest.getAirportDestinationId())
-						&& flight.getDestination().getId().equals(flightRequest.getAirportSourceId()))
-						|| flight.getFlightTime().equals(flightRequest.getFlightTime())) {
-					isAircraftBusy = true;
-				}
-			}
+
+		// The destination of the last scheduled flight and the source point of the planned flight must be the same. 
+		// When you plan A -> B, you can not A, X -> C. You can plan B -> X firstly.
+		FlightDto lastPlannedFlight = flights.stream().max(Comparator.comparing(FlightDto::getFlightTime)).get();
+		if (!lastPlannedFlight.getDestination().getId().equals(flightRequest.getAirportSourceId())) {
+			return true;
 		}
-		return isAircraftBusy;
+		
+		return false;
 	}
 
 	private void checkFlight(FlightRequestDto flightRequest) {

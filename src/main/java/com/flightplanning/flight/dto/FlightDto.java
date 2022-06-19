@@ -20,5 +20,6 @@ public class FlightDto {
 	private LocalDate flightDate;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime flightTime;
+	private Integer flightDuration;
 
 }

@@ -56,4 +56,7 @@ public class Flight {
 	@Column(nullable = false)
 	private LocalTime flightTime;
 	
+	@Column(nullable = false)
+	private Integer flightDuration;
+	
 }

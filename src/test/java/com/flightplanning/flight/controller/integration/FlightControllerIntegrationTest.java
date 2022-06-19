@@ -36,7 +36,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"3dbc4cdd-2c24-4930-bc65-4d2001943d9f\",\r\n"
                 		+ "    \"airportSourceId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"flightDate\": \"20-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -52,7 +53,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"3dbc4cdd-2c24-4930-bc65-4d2001943d9f\",\r\n"
                 		+ "    \"airportSourceId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"flightDate\": \"20-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"12:00:00\"\r\n"
+                		+ "    \"flightTime\": \"12:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -68,7 +70,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"airportSourceId\": \"3dbc4cdd-2c24-4930-bc65-4d2001943d9f\",\r\n"
                 		+ "    \"flightDate\": \"20-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"14:00:00\"\r\n"
+                		+ "    \"flightTime\": \"14:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -87,7 +90,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"9a3c8e42-cdb9-4ed5-9164-1938cac71920\",\r\n"
                 		+ "    \"airportSourceId\": \"10fca35c-b1de-4a53-a9de-59c3e67b1d51\",\r\n"
                 		+ "    \"flightDate\": \"18-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -106,7 +110,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"airportSourceId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"flightDate\": \"18-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -125,7 +130,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"9a3c8e42-cdb9-4ed5-9164-1938cac71920\",\r\n"
                 		+ "    \"airportSourceId\": \"c029953d-dc3a-4e72-b685-aab4211a9ab0\",\r\n"
                 		+ "    \"flightDate\": \"18-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -144,7 +150,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"3dbc4cdd-2c24-4930-bc65-4d2001943d9f\",\r\n"
                 		+ "    \"airportSourceId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"flightDate\": \"20-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -163,7 +170,8 @@ class FlightControllerIntegrationTest {
                 		+ "    \"airportDestinationId\": \"3dbc4cdd-2c24-4930-bc65-4d2001943d9f\",\r\n"
                 		+ "    \"airportSourceId\": \"9fdafcfb-4395-416b-9187-fdb7b2e7c0d2\",\r\n"
                 		+ "    \"flightDate\": \"20-06-2022\",\r\n"
-                		+ "    \"flightTime\": \"10:00:00\"\r\n"
+                		+ "    \"flightTime\": \"10:00:00\",\r\n"
+                		+ "    \"flightDuration\": 1\r\n"
                 		+ "}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
